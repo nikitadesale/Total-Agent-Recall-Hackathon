@@ -1,4 +1,4 @@
-# 👁️ Sentinel Twin — Privacy-First Digital Twin
+# 👁️ Sentinel Twin - Privacy-First Digital Twin
 
 > *"What if one AI had full context of your life — and used it to protect you?"*
 
