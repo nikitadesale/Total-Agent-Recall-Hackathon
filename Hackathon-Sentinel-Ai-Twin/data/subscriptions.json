@@ -1,0 +1,13 @@
+{
+  "subscriptions": [
+    { "name": "Netflix",   "cost": 15.99, "last_used_days_ago": 2,  "monthly_sessions": 18, "status": "active" },
+    { "name": "Spotify",   "cost": 9.99,  "last_used_days_ago": 0,  "monthly_sessions": 45, "status": "active" },
+    { "name": "Duolingo",  "cost": 6.99,  "last_used_days_ago": 23, "monthly_sessions": 1,  "status": "active", "streak_broken": true },
+    { "name": "Gym",       "cost": 49.00, "last_used_days_ago": 5,  "monthly_sessions": 3,  "status": "active", "recommended_visits_per_week": 3 },
+    { "name": "NYT",       "cost": 4.99,  "last_used_days_ago": 31, "monthly_sessions": 0,  "status": "active" },
+    { "name": "iCloud",    "cost": 2.99,  "last_used_days_ago": 0,  "monthly_sessions": 999,"status": "active" }
+  ],
+  "total_monthly_spend": 89.95,
+  "waste_score": "HIGH",
+  "potential_monthly_savings": 11.98
+}

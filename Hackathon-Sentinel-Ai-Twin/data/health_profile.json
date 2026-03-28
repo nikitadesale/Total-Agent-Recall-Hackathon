@@ -1,0 +1,12 @@
+{
+  "resourceType": "Observation",
+  "subject": "User-77a",
+  "nutritional_targets": {
+    "calories_max": 2200,
+    "calories_consumed": 1450
+  },
+  "restrictions": {
+    "allergies": ["peanuts", "shellfish"],
+    "dietary": "Low-Sodium"
+  }
+}

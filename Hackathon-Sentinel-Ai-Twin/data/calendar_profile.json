@@ -1,0 +1,13 @@
+{
+  "today": "Saturday",
+  "upcoming_events": [
+    { "title": "Team standup",     "time": "09:00", "day": "Monday",    "type": "work" },
+    { "title": "Dentist",          "time": "14:00", "day": "Tuesday",   "type": "health" },
+    { "title": "Dinner with Alex", "time": "19:30", "day": "Wednesday", "type": "social" },
+    { "title": "Friday drinks",    "time": "18:00", "day": "Friday",    "type": "social" }
+  ],
+  "social_events_this_week": 2,
+  "work_meetings_tomorrow": 3,
+  "pattern_insight": "You typically decline Friday social events when you have 2+ midweek events. This week has 2.",
+  "free_blocks_today": ["14:00-17:00", "20:00-22:00"]
+}

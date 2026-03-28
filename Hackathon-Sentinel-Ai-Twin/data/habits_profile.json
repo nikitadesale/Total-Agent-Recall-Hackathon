@@ -1,0 +1,32 @@
+{
+  "sleep": {
+    "avg_bedtime": "23:30",
+    "avg_wake_time": "07:15",
+    "avg_hours": 6.5,
+    "recommended_hours": 8.0,
+    "sleep_debt_hours": 4.5,
+    "next_alarm": "07:00"
+  },
+  "fitness": {
+    "steps_today": 1820,
+    "steps_goal": 8000,
+    "steps_remaining": 6180,
+    "workouts_this_week": 1,
+    "workout_goal_per_week": 3,
+    "last_workout_days_ago": 5
+  },
+  "screen_time": {
+    "today_hours": 6.2,
+    "daily_limit_hours": 4.0,
+    "top_apps": ["Instagram", "YouTube", "Twitter"],
+    "over_limit": true
+  },
+  "hydration": {
+    "glasses_today": 3,
+    "daily_goal": 8,
+    "reminder_due": true
+  },
+  "doordash_orders_this_week": 3,
+  "doordash_weekly_budget": 50.00,
+  "doordash_spent_this_week": 47.50
+}

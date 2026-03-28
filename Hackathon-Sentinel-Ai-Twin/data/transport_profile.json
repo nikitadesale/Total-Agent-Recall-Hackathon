@@ -1,0 +1,16 @@
+{
+  "provider": "Uber",
+  "preferred_type": "UberX",
+  "weekly_ride_budget": 60.00,
+  "spent_this_week": 34.50,
+  "avg_commute_cost": 12.00,
+  "usual_departure_time": "09:15",
+  "current_surge_multiplier": 2.3,
+  "surge_threshold_to_wait": 1.4,
+  "estimated_surge_drop_minutes": 8,
+  "frequent_routes": [
+    { "from": "Home", "to": "Office", "avg_cost": 11.50, "avg_duration_mins": 22 },
+    { "from": "Office", "to": "Gym", "avg_cost": 6.00, "avg_duration_mins": 12 }
+  ],
+  "ride_count_this_week": 4
+}

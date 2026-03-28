@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sentinel Twin — Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04090f;
+  --bg2:#080f1c;
+  --bg3:#0c1525;
+  --bg4:#101d32;
+  --cyan:#38bdf8;
+  --cyan2:#0ea5e9;
+  --purple:#818cf8;
+  --green:#34d399;
+  --amber:#fbbf24;
+  --red:#f87171;
+  --pink:#f472b6;
+  --border:#1a2d45;
+  --border2:#1f3a58;
+  --text:#e2e8f0;
+  --text2:#94a3b8;
+  --text3:#4b6080;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ── HEADER ── */
+.header{text-align:center;padding:48px 20px 32px;position:relative}
+.header-eyebrow{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:12px;opacity:0.8}
+.header h1{font-size:42px;font-weight:800;letter-spacing:-1.5px;line-height:1.1}
+.header h1 span{background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header p{color:var(--text2);font-size:16px;margin-top:10px;max-width:520px;margin-inline:auto;line-height:1.6}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 #34d39966}50%{box-shadow:0 0 0 8px transparent}}
+
+/* ── CANVAS ── */
+.canvas{max-width:1080px;margin:0 auto;padding:0 24px 60px;position:relative}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:9.5px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding-left:2px}
+
+/* ── CARDS ── */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-title{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card-sub{font-size:11px;color:var(--text2);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.card-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.5px;margin-left:auto;flex-shrink:0}
+
+/* ── ROW 1: USER ── */
+.row-user{display:flex;justify-content:center;margin-bottom:28px}
+.user-card{background:linear-gradient(135deg,#0f1f3a,#0d1829);border:1.5px solid #2a4a6b;border-radius:16px;padding:18px 32px;text-align:center;min-width:280px}
+.user-icon{font-size:36px;margin-bottom:6px}
+.user-title{font-size:15px;font-weight:700}
+.user-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.user-tags{display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.tag{font-size:10px;padding:3px 9px;border-radius:8px;font-family:'JetBrains Mono',monospace;border:1px solid}
+
+/* ── ROW 2: FRONTEND ── */
+.row-frontend{display:flex;justify-content:center;margin-bottom:28px}
+.frontend-card{background:linear-gradient(135deg,#130d2a,#0e0d20);border:1.5px solid #3730a3;border-radius:16px;padding:18px 28px;min-width:480px}
+.frontend-inner{display:flex;align-items:center;gap:18px}
+.frontend-icon{font-size:32px}
+.frontend-panels{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.fp{background:#1a1040;border:1px solid #3730a360;border-radius:8px;padding:6px 12px;font-size:10.5px;color:var(--purple);font-family:'JetBrains Mono',monospace}
+
+/* ── ROW 3: BRAIN ── */
+.row-brain{display:grid;grid-template-columns:1fr 320px 1fr;gap:16px;margin-bottom:28px;align-items:start}
+
+.brain-card{background:linear-gradient(145deg,#061629,#08152a);border:2px solid var(--cyan2);border-radius:20px;padding:22px;box-shadow:0 0 40px #0ea5e920,0 0 80px #0ea5e908}
+.brain-title{font-size:18px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}
+.brain-title svg{flex-shrink:0}
+.brain-sub{font-size:11px;color:var(--text2);margin-top:4px;font-family:'JetBrains Mono',monospace}
+.endpoints{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.ep{display:flex;align-items:center;gap:8px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:8px 12px}
+.ep-method{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.ep-method.get{background:#10b98120;color:var(--green);border:1px solid #10b98140}
+.ep-method.post{background:#0ea5e920;color:var(--cyan);border:1px solid #0ea5e940}
+.ep-path{font-size:11px;color:var(--text);font-family:'JetBrains Mono',monospace}
+.ep-desc{font-size:10px;color:var(--text2);margin-left:auto;text-align:right}
+
+/* side columns */
+.side-col{display:flex;flex-direction:column;gap:12px}
+.side-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px}
+.side-icon{font-size:22px;margin-bottom:6px}
+.side-title{font-size:12px;font-weight:600}
+.side-sub{font-size:10.5px;color:var(--text2);margin-top:2px;line-height:1.5}
+.side-stack{font-size:9.5px;font-family:'JetBrains Mono',monospace;color:var(--text3);margin-top:6px}
+
+/* data domains left */
+.domain-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 9px;border-radius:7px;margin:3px 3px 0 0;border:1px solid}
+
+/* ── ROW 4: EXTERNAL ── */
+.row-external{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px}
+.ext-card{border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.ext-card.gmi{background:linear-gradient(135deg,#0a1a10,#061410);border:1.5px solid #065f46}
+.ext-card.hydra{background:linear-gradient(135deg,#1a0a2e,#120824);border:1.5px solid #5b21b6}
+.ext-header{display:flex;align-items:center;gap:12px}
+.ext-icon{font-size:28px}
+.ext-title{font-size:15px;font-weight:700}
+.ext-version{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text3);margin-top:1px}
+.ext-detail{font-size:12px;color:var(--text2);line-height:1.6}
+.ext-features{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.ef{font-size:10px;padding:3px 9px;border-radius:7px;font-family:'JetBrains Mono',monospace}
+
+/* ── FLOW ARROWS ── */
+.arrows{display:flex;flex-direction:column;align-items:center;gap:2px;margin:8px 0}
+.arrow-line{width:2px;height:18px;background:linear-gradient(to bottom,var(--cyan),var(--cyan2));border-radius:1px;position:relative}
+.arrow-line::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--cyan2)}
+.arrow-label{font-size:9.5px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px;white-space:nowrap}
+
+/* ── FLOW NUMBERS ── */
+.flow-section{margin-bottom:40px}
+.flow-title{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text)}
+.flow-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.flow-step{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative}
+.flow-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-bottom:8px;flex-shrink:0}
+.flow-step-title{font-size:12px;font-weight:600;margin-bottom:3px}
+.flow-step-desc{font-size:11px;color:var(--text2);line-height:1.5}
+
+/* ── STACK TABLE ── */
+.stack-section{margin-bottom:20px}
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stack-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.stack-icon{font-size:20px}
+.stack-name{font-size:12px;font-weight:600}
+.stack-role{font-size:10.5px;color:var(--text2)}
+
+/* divider */
+.divider{border:none;border-top:1px solid var(--border);margin:32px 0}
+
+/* animated pulse ring on brain */
+.pulse-ring{position:absolute;inset:-4px;border-radius:24px;border:1px solid var(--cyan2);opacity:0;animation:ring 3s ease infinite}
+.pulse-ring:nth-child(2){animation-delay:1s}
+.pulse-ring:nth-child(3){animation-delay:2s}
+@keyframes ring{0%{opacity:.4;transform:scale(1)}100%{opacity:0;transform:scale(1.04)}}
+
+/* data flow animation */
+.flow-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);position:absolute;animation:flowDown 2s linear infinite;left:50%;transform:translateX(-50%)}
+@keyframes flowDown{0%{top:0;opacity:1}100%{top:100%;opacity:0}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow"><span class="live-dot"></span>System Architecture</div>
+  <h1><span>Sentinel Twin</span></h1>
+  <p>A privacy-first digital twin that mirrors your life across all apps — finance, health, transport, habits, and calendar — with AI-powered decisions in real time.</p>
+</div>
+
+<div class="canvas">
+
+  <!-- ── USER ── -->
+  <div class="section-label">01 — The Human</div>
+  <div class="row-user">
+    <div class="user-card">
+      <div class="user-icon">🧑‍💻</div>
+      <div class="user-title">You — User-77a</div>
+      <div class="user-sub">Consent-granted access to all life apps</div>
+      <div class="user-tags">
+        <span class="tag" style="border-color:#38bdf840;color:var(--cyan)">💰 Bank</span>
+        <span class="tag" style="border-color:#34d39940;color:var(--green)">🥗 Health</span>
+        <span class="tag" style="border-color:#fbbf2440;color:var(--amber)">🚗 Uber</span>
+        <span class="tag" style="border-color:#f472b640;color:var(--pink)">📱 Apps</span>
+        <span class="tag" style="border-color:#a78bfa40;color:var(--purple)">🏃 Habits</span>
+        <span class="tag" style="border-color:#94a3b840;color:var(--text2)">📅 Calendar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrow down -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:20px">
+    <div style="width:2px;height:28px;background:linear-gradient(to bottom,#38bdf8,#818cf8);border-radius:1px;position:relative">
+      <div style="position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #818cf8"></div>
+    </div>
+    <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px">HTTPS request</span>
+  </div>
+
+  <!-- ── FRONTEND ── -->
+  <div class="section-label">02 — Frontend Interface</div>
+  <div class="row-frontend" style="margin-bottom:8px">
+    <div class="frontend-card">
+      <div class="frontend-inner">
+        <div class="frontend-icon">⚛️</div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--purple)">React + Vite</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">localhost:5173 · Dark UI · Hot reload</div>
+        </div>
+        <span class="card-badge" style="background:#818cf820;color:var(--purple);border:1px solid #818cf840">RUNNING</span>
+      </div>
+      <div class="frontend-panels">
+        <div class="fp">💬 Chat Panel</div>
+        <div class="fp">🔔 Smart Alerts</div>
+        <div class="fp">🗄️ Live Vault</div>
+        <div class="fp">🧠 Memory Search</div>
+        <div class="fp">🔊 Text-to-Speech</div>
+        <div class="fp">📊 Quick Prompts</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:20px;margin-top:12px">
+    <div style="width:2px;height:28px;background:linear-gradient(to bottom,#818cf8,#38bdf8);border-radius:1px;position:relative">
+      <div style="position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #38bdf8"></div>
+    </div>
+    <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px">Axios REST calls</span>
+  </div>
+
+  <!-- ── BRAIN ROW ── -->
+  <div class="section-label">03 — The Brain (API Middleware)</div>
+  <div class="row-brain">
+
+    <!-- LEFT: Data Layer -->
+    <div class="side-col">
+      <div class="side-card" style="border-color:#1e3a4a">
+        <div class="side-icon">📂</div>
+        <div class="side-title" style="color:var(--cyan)">Synthetic Data Layer</div>
+        <div class="side-sub">7 domain profiles simulate real app data with standardised schemas</div>
+        <div style="margin-top:10px">
+          <div class="domain-tag" style="border-color:#38bdf830;color:var(--cyan);background:#38bdf808">💰 finance_profile.json<br><span style="font-size:9px;opacity:.6">ISO-20022</span></div>
+          <div class="domain-tag" style="border-color:#34d39930;color:var(--green);background:#34d39908">🥗 health_profile.json<br><span style="font-size:9px;opacity:.6">FHIR-Lite</span></div>
+          <div class="domain-tag" style="border-color:#fbbf2430;color:var(--amber);background:#fbbf2408">🚗 transport_profile.json<br><span style="font-size:9px;opacity:.6">Open API</span></div>
+          <div class="domain-tag" style="border-color:#f472b630;color:var(--pink);background:#f472b608">📱 subscriptions.json<br><span style="font-size:9px;opacity:.6">Custom</span></div>
+          <div class="domain-tag" style="border-color:#a78bfa30;color:var(--purple);background:#a78bfa08">🏃 habits_profile.json<br><span style="font-size:9px;opacity:.6">Custom</span></div>
+          <div class="domain-tag" style="border-color:#94a3b830;color:var(--text2);background:#94a3b808">📅 calendar_profile.json<br><span style="font-size:9px;opacity:.6">Custom</span></div>
+          <div class="domain-tag" style="border-color:#94a3b830;color:var(--text2);background:#94a3b808">🪪 user_identity.json<br><span style="font-size:9px;opacity:.6">JSON-LD</span></div>
+        </div>
+      </div>
+      <div class="side-card" style="border-color:#1a3a20">
+        <div class="side-icon">⚖️</div>
+        <div class="side-title" style="color:var(--green)">Reconciliation Engine</div>
+        <div class="side-sub" style="margin-top:4px">logic.py — stateless constraint checks</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:10.5px;color:var(--text2)">✓ Budget check (daily limit)</div>
+          <div style="font-size:10.5px;color:var(--text2)">✓ Calorie check (FHIR targets)</div>
+          <div style="font-size:10.5px;color:var(--text2)">✓ Allergen detection</div>
+          <div style="font-size:10.5px;color:var(--text2)">✓ Returns APPROVED / REJECTED</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: FastAPI Brain -->
+    <div style="position:relative">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="brain-card">
+        <div class="brain-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M2 17l10 5 10-5" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M2 12l10 5 10-5" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          FastAPI
+        </div>
+        <div class="brain-sub">main.py · Python 3.9 · Port 8000</div>
+
+        <div class="endpoints">
+          <div class="ep">
+            <span class="ep-method get">GET</span>
+            <span class="ep-path">/vault/status</span>
+            <span class="ep-desc">All 6 domains</span>
+          </div>
+          <div class="ep">
+            <span class="ep-method post">POST</span>
+            <span class="ep-path">/chat</span>
+            <span class="ep-desc">AI reasoning</span>
+          </div>
+          <div class="ep">
+            <span class="ep-method get">GET</span>
+            <span class="ep-path">/insights</span>
+            <span class="ep-desc">Proactive alerts</span>
+          </div>
+          <div class="ep">
+            <span class="ep-method post">POST</span>
+            <span class="ep-path">/validate/action</span>
+            <span class="ep-desc">Action check</span>
+          </div>
+          <div class="ep">
+            <span class="ep-method get">GET</span>
+            <span class="ep-path">/memory/recall</span>
+            <span class="ep-desc">HydraDB query</span>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;padding:10px;background:var(--bg4);border-radius:8px;border:1px solid var(--border)">
+          <div style="font-size:9.5px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:5px">SMART CONTEXT ROUTER</div>
+          <div style="font-size:11px;color:var(--text2);line-height:1.5">Reads query intent → loads only relevant domains → saves ~60% tokens per call</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Logic + Audit -->
+    <div class="side-col">
+      <div class="side-card" style="border-color:#3a1a1a">
+        <div class="side-icon">🔒</div>
+        <div class="side-title" style="color:var(--red)">Privacy Rules</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:10.5px;color:var(--text2)">⚡ Stateless — no data persisted</div>
+          <div style="font-size:10.5px;color:var(--text2)">🔍 Audit log every request</div>
+          <div style="font-size:10.5px;color:var(--text2)">🪪 De-identified vault output</div>
+          <div style="font-size:10.5px;color:var(--text2)">✅ User consent required</div>
+          <div style="font-size:10.5px;color:var(--text2)">🚫 No raw IDs exposed</div>
+        </div>
+      </div>
+      <div class="side-card" style="border-color:#1a2a3a">
+        <div class="side-icon">📋</div>
+        <div class="side-title" style="color:var(--text2)">Audit Trail</div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);line-height:1.8">
+          [AUDIT] Accessing<br>
+          &nbsp;Health_Vault<br>
+          &nbsp;for User-77a<br>
+          &nbsp;| Timestamp: ...
+        </div>
+        <div style="margin-top:6px;font-size:10.5px;color:var(--text2)">Printed to console for every API call — visible to judges in real time</div>
+      </div>
+      <div class="side-card" style="border-color:#1e2a1a">
+        <div class="side-icon">🎯</div>
+        <div class="side-title" style="color:var(--green)">Insights Engine</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+          <div style="font-size:10.5px;color:var(--text2)">🚗 Surge price detection</div>
+          <div style="font-size:10.5px;color:var(--text2)">📱 Subscription waste scan</div>
+          <div style="font-size:10.5px;color:var(--text2)">🍔 DoorDash budget guard</div>
+          <div style="font-size:10.5px;color:var(--text2)">😴 Sleep debt tracker</div>
+          <div style="font-size:10.5px;color:var(--text2)">🏃 Fitness nudge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- arrows to external -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:12px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="width:2px;height:28px;background:linear-gradient(to bottom,#38bdf8,#34d399);border-radius:1px;position:relative">
+        <div style="position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #34d399"></div>
+      </div>
+      <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px">subprocess curl · LLM request</span>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="width:2px;height:28px;background:linear-gradient(to bottom,#38bdf8,#a78bfa);border-radius:1px;position:relative">
+        <div style="position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid #a78bfa"></div>
+      </div>
+      <span style="font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px">REST API · memory store/recall</span>
+    </div>
+  </div>
+
+  <!-- ── EXTERNAL SERVICES ── -->
+  <div class="section-label">04 — External Intelligence & Memory</div>
+  <div class="row-external">
+
+    <!-- GMI Cloud -->
+    <div class="ext-card gmi">
+      <div class="ext-header">
+        <div class="ext-icon">🤖</div>
+        <div>
+          <div class="ext-title" style="color:var(--green)">GMI Cloud</div>
+          <div class="ext-version">api.gmi-serving.com/v1</div>
+        </div>
+        <span class="card-badge" style="background:#10b98118;color:var(--green);border:1px solid #10b98130;margin-left:auto">ACTIVE</span>
+      </div>
+      <div style="background:#061a10;border:1px solid #065f4640;border-radius:10px;padding:12px;margin-top:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:4px">moonshotai / Kimi K2.5</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">World-class reasoning model. Receives a lean, query-aware context of the user's live vault data and returns smart, specific advice.</div>
+      </div>
+      <div class="ext-features">
+        <span class="ef" style="background:#10b98110;color:var(--green);border:1px solid #10b98130">600 max tokens</span>
+        <span class="ef" style="background:#10b98110;color:var(--green);border:1px solid #10b98130">Smart routing</span>
+        <span class="ef" style="background:#10b98110;color:var(--green);border:1px solid #10b98130">~60% token savings</span>
+      </div>
+    </div>
+
+    <!-- HydraDB -->
+    <div class="ext-card hydra">
+      <div class="ext-header">
+        <div class="ext-icon">🧠</div>
+        <div>
+          <div class="ext-title" style="color:var(--purple)">HydraDB</div>
+          <div class="ext-version">api.hydradb.com · tenant: sentinel-twin-user77a</div>
+        </div>
+        <span class="card-badge" style="background:#818cf818;color:var(--purple);border:1px solid #818cf830;margin-left:auto">MEMORY</span>
+      </div>
+      <div style="background:#100820;border:1px solid #5b21b640;border-radius:10px;padding:12px;margin-top:4px">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:4px">Pattern Memory Store</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">Every chat turn and decision is stored as a memory. Future conversations recall relevant past context — the twin learns your patterns over time.</div>
+      </div>
+      <div class="ext-features">
+        <span class="ef" style="background:#818cf810;color:var(--purple);border:1px solid #818cf830">add_memory</span>
+        <span class="ef" style="background:#818cf810;color:var(--purple);border:1px solid #818cf830">full_recall</span>
+        <span class="ef" style="background:#818cf810;color:var(--purple);border:1px solid #818cf830">pattern inference</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- ── FLOW ── -->
+  <div class="flow-section">
+    <div class="flow-title">🔄 How a Request Flows</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num" style="background:#38bdf820;color:var(--cyan);border:1px solid #38bdf840">1</div>
+        <div class="flow-step-title">User asks a question</div>
+        <div class="flow-step-desc">Chat input in the React UI — e.g. "Should I order DoorDash tonight?"</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="background:#818cf820;color:var(--purple);border:1px solid #818cf840">2</div>
+        <div class="flow-step-title">Axios → POST /chat</div>
+        <div class="flow-step-desc">Full message history sent to FastAPI with include_vault: true</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="background:#fbbf2420;color:var(--amber);border:1px solid #fbbf2440">3</div>
+        <div class="flow-step-title">Smart context routing</div>
+        <div class="flow-step-desc">Query intent parsed → only relevant domains loaded (saves tokens)</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="background:#34d39920;color:var(--green);border:1px solid #34d39940">4</div>
+        <div class="flow-step-title">HydraDB recall</div>
+        <div class="flow-step-desc">Past decisions and patterns retrieved to give the model memory</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="background:#34d39920;color:var(--green);border:1px solid #34d39940">5</div>
+        <div class="flow-step-title">Kimi K2.5 reasons</div>
+        <div class="flow-step-desc">GMI Cloud model receives system prompt + vault context + history</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num" style="background:#38bdf820;color:var(--cyan);border:1px solid #38bdf840">6</div>
+        <div class="flow-step-title">Response + memory stored</div>
+        <div class="flow-step-desc">Reply returned to UI · Turn saved to HydraDB · Vault refreshes</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <!-- ── STACK ── -->
+  <div class="stack-section">
+    <div class="flow-title">🛠 Full Tech Stack</div>
+    <div style="margin-top:14px" class="stack-grid">
+      <div class="stack-item"><span class="stack-icon">⚛️</span><div><div class="stack-name">React + Vite</div><div class="stack-role">Frontend UI</div></div></div>
+      <div class="stack-item"><span class="stack-icon">⚡</span><div><div class="stack-name">FastAPI</div><div class="stack-role">API Middleware</div></div></div>
+      <div class="stack-item"><span class="stack-icon">🐍</span><div><div class="stack-name">Python 3.9</div><div class="stack-role">Backend runtime</div></div></div>
+      <div class="stack-item"><span class="stack-icon">🤖</span><div><div class="stack-name">Kimi K2.5</div><div class="stack-role">LLM Reasoning</div></div></div>
+      <div class="stack-item"><span class="stack-icon">☁️</span><div><div class="stack-name">GMI Cloud</div><div class="stack-role">Model hosting</div></div></div>
+      <div class="stack-item"><span class="stack-icon">🧠</span><div><div class="stack-name">HydraDB</div><div class="stack-role">Pattern memory</div></div></div>
+      <div class="stack-item"><span class="stack-icon">🏥</span><div><div class="stack-name">FHIR-Lite</div><div class="stack-role">Health schema</div></div></div>
+      <div class="stack-item"><span class="stack-icon">🏦</span><div><div class="stack-name">ISO-20022</div><div class="stack-role">Finance schema</div></div></div>
+      <div class="stack-item"><span class="stack-icon">🪪</span><div><div class="stack-name">JSON-LD</div><div class="stack-role">Identity schema</div></div></div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div style="text-align:center;color:var(--text3);font-size:11px;font-family:'JetBrains Mono',monospace;padding-bottom:20px">
+    Built at hackathon · Sentinel Twin v2.0 · Privacy-First Digital Twin
+  </div>
+
+</div>
+</body>
+</html>
