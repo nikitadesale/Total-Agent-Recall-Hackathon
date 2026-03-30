@@ -1,6 +1,6 @@
 # Sentinel Twin - Privacy-First Digital Twin
 
-> *"What if one AI had full context of your life — and used it to protect you?"*
+> *"What if one AI had full context of your life - and used it to protect you?"*
 
 Sentinel Twin is a privacy-first personal AI guardian that mirrors your entire digital life with your consent. It connects your finance, health, transport, subscriptions, habits, and calendar data to make smarter, proactive decisions on your behalf, powered by **Kimi K2.5 via GMI Cloud** and **HydraDB** for pattern memory.
 
