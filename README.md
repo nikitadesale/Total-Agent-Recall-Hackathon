@@ -200,4 +200,4 @@ Hackathon-Sentinel-Ai-Twin/
 
 ## 👁️ Built at Hackathon
 
-Sentinel Twin — because your future self deserves a guardian.
+Sentinel Twin - because your future self deserves a guardian.
