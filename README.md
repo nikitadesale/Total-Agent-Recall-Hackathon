@@ -2,7 +2,7 @@
 
 > *"What if one AI had full context of your life — and used it to protect you?"*
 
-Sentinel Twin is a privacy-first personal AI guardian that mirrors your entire digital life with your consent. It connects your finance, health, transport, subscriptions, habits, and calendar data to make smarter, proactive decisions on your behalf — powered by **Kimi K2.5 via GMI Cloud** and **HydraDB** for pattern memory.
+Sentinel Twin is a privacy-first personal AI guardian that mirrors your entire digital life with your consent. It connects your finance, health, transport, subscriptions, habits, and calendar data to make smarter, proactive decisions on your behalf, powered by **Kimi K2.5 via GMI Cloud** and **HydraDB** for pattern memory.
 
 ---
 
@@ -18,7 +18,7 @@ It knows:
 - 🏃 Your sleep debt, steps, and gym streak
 - 📅 Your upcoming calendar and social load
 
-And it acts as a guardian — blocking bad decisions, surfacing smart alternatives, and connecting dots across domains before you even notice the pattern.
+And it acts as a guardian, blocking bad decisions, surfacing smart alternatives, and connecting dots across domains before you even notice the pattern.
 
 ---
 
